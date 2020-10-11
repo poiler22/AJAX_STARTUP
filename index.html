@@ -54,6 +54,7 @@ function search_click() {
                   console.log("in")
                   var price = "0"
                   var image= "";
+                  var ibs = "not available";
                   if (json.items[i].saleInfo.retailPrice == undefined) {
                     //price = "not available"
                     if (json.items[i].saleInfo.listPrice == undefined){
@@ -71,24 +72,30 @@ function search_click() {
                   }else{
                     image = json.items[i].volumeInfo.imageLinks.thumbnail
                   }
+
+                  if (json.items[i].volumeInfo.industryIdentifiers == undefined){
+                  
+                }else{
+                  ibs = json.items[i].volumeInfo.industryIdentifiers[0].identifier
+                }
         html_str = '<div class="row" style="border: black solid 1px; background-color: white; font-size:1px; border-radius: 10px">'+
                     '<div class="col-8">' 
                     +'<h2>'+json.items[i].volumeInfo.title+'</h2>'+
                     '<h3      style="font-family:verdana; font-size:16pt" >'+'Author: '+json.items[i].volumeInfo.authors+'</h3>'
-                    +'<h3 style="font-family:verdana; font-size:16pt">'+'ISBN: '+json.items[i].volumeInfo.industryIdentifiers[0].identifier+'</h3>'
+                    +'<h3 style="font-family:verdana; font-size:16pt">'+'ISBN: '+ibs+'</h3>'
                     +'<h3 style="font-family:verdana; font-size:16pt">'+'Price: '+price+'</h3>'+ 
                     '</div>'+ 
                     '<div class="col-2">'
                     +'<img src='+image+'/>'
                     +'</div>' 
                     +'</div>' + '<br>'
-        $('#search_index').html( '<h3 style="font-family:verdana; font-size:16pt">' + JSON.stringify(json.items.length) + " result(s) found" + '</h3>');
+
         console.log(html_str);
         console.log(i)
         $('#result').append(html_str);
         
       }
-
+      $('#search_index').html( '<h3 style="font-family:verdana; font-size:16pt">' + JSON.stringify(json.items.length) + " result(s) found" + '</h3>');
     }
 
     }
