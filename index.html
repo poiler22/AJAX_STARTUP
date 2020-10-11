@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Kittidech Ditsuwan 61011441</title>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">   
+  <style>
+      .h3{
+        font-family: "Times New Roman", Times, serif;
+        font-size: medium;
+        color:blue
+      }
+  </style>
+</head>
+
+<body>
+    <h1>Kittidech Ditsuwan 61011441</h1>
+    <div class="container" style="background-color: lightblue; height: auto;">
+            <div class="row">
+                <div id="booksearch" style="font-size: 36px; margin-left: 15px; font-weight: bold;">BOOKS SEARCH</div>
+            </div>
+            <div class="row" style="padding-bottom: 25px;">
+                <div class="col-8">
+                    <input type="text" id="bookname" style="width: 750px;">
+                    <h2 id="search_index"></h2>
+                </div>
+                <div class="col-4">
+                    <button onclick="search_click()">Search</button>
+                </div>
+            </div>
+        <div>
+            <div class="container" id="result">
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+
+
+function search_click() {
+    $('#search_index').html('')
+    $('#result').html('');
+    var name = $('#bookname').val();
+  $.ajax({
+    url: "https://www.googleapis.com/books/v1/volumes?q=title:"+name,
+    type: "GET",
+    cache: false,
+    success: function(json) {
+        console.log(json)
+            if (json.items.length != 0){
+              for(var i=0; i<json.items.length; i++){
+                  console.log("in")
+                  var price = "0"
+                  var image= "";
+                  if (json.items[i].saleInfo.retailPrice == undefined) {
+                    //price = "not available"
+                    if (json.items[i].saleInfo.listPrice == undefined){
+                        price = "not available"
+                    }
+                    else{
+                        price = json.items[i].saleInfo.listPrice.amount
+                    }
+                  }
+                  else{
+                    price = json.items[i].saleInfo.retailPrice.amount
+                  }
+                  if (json.items[i].volumeInfo.imageLinks == undefined){
+                  
+                  }else{
+                    image = json.items[i].volumeInfo.imageLinks.thumbnail
+                  }
+        html_str = '<div class="row" style="border: black solid 1px; background-color: white; font-size:1px; border-radius: 10px">'+
+                    '<div class="col-8">' 
+                    +'<h2>'+json.items[i].volumeInfo.title+'</h2>'+
+                    '<h3      style="font-family:verdana; font-size:16pt" >'+'Author: '+json.items[i].volumeInfo.authors+'</h3>'
+                    +'<h3 style="font-family:verdana; font-size:16pt">'+'ISBN: '+json.items[i].volumeInfo.industryIdentifiers[0].identifier+'</h3>'
+                    +'<h3 style="font-family:verdana; font-size:16pt">'+'Price: '+price+'</h3>'+ 
+                    '</div>'+ 
+                    '<div class="col-2">'
+                    +'<img src='+image+'/>'
+                    +'</div>' 
+                    +'</div>' + '<br>'
+        $('#search_index').html( '<h3 style="font-family:verdana; font-size:16pt">' + JSON.stringify(json.items.length) + " result(s) found" + '</h3>');
+        console.log(html_str);
+        console.log(i)
+        $('#result').append(html_str);
+        
+      }
+
+    }
+
+    }
+  });
+}
+
+</script>
+
+</body>
+</html>
